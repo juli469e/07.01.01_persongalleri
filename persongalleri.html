@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>queens</title>
+    <style>
+
+        img {
+            width: 100%;
+            object-fit: cover;
+            aspect-ratio: 1/1;
+        }
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+    gap: 15px;
+}
+
+.article {
+    border-style: solid;
+    border-color: orange;
+}
+
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="container""></section>
+      <template>
+        <article class="article">
+          <img src="" alt="" class="profilbillede" />
+          <h2 class="fornavn"></h2>
+          <h2 class="efternavn"></h2>
+          <p class="email"></p>
+          <p class="fødselsdag"></p>
+        </article>
+      </template>
+    </main>
+
+    <script>
+      const url = "https://tema7database-797d.restdb.io/rest/medlemmer";
+      const options = {
+        headers: {
+          "x-apikey": "61fcf7e43f215f310a37be56",
+        },
+      };
+
+      async function hentData() {
+        const respons = await fetch(url, options);
+        const json = await respons.json();
+        vis(json);
+      }
+
+      const template = document.querySelector("template");
+      const container = document.querySelector(".container")
+
+      function vis(json) {
+        console.log(json);
+        json.forEach((person) => {
+          const klon = template.cloneNode(true).content;
+          klon.querySelector(".profilbillede").src =
+            "faces/" + person.profilbillede;
+          klon.querySelector(".fornavn").textContent = person.fornavn;
+          klon.querySelector(".efternavn").textContent = person.efternavn;
+          klon.querySelector(".email").textContent = person.email;
+          let dag = new Date(person.fødselsdag).toDateString();
+          klon.querySelector(".fødselsdag").textContent = dag;
+          container.appendChild(klon);
+        });
+      }
+
+      hentData();
+    </script>
+  </body>
+</html>
